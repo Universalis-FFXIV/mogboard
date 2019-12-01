@@ -29,7 +29,7 @@ class IndexController extends AbstractController
     private $users;
     /** @var Mail */
     private $mail;
-    
+
     public function __construct(
         Popularity $itemPopularity,
         CompanionStatistics $companionStatistics,
@@ -44,14 +44,14 @@ class IndexController extends AbstractController
         $this->mail                     = $mail;
         $this->universalisApi           = new UniversalisApi();
     }
-    
+
     /**
      * @Route("/", name="home")
      */
     public function home(Request $request)
     {
         $this->users->setLastUrl($request);
-        
+
         // grab the users market feed
         //$marketFeed = $this->companionMarketActivity->getFeed($this->users->getUser());
         //$marketFeed = json_decode(json_encode($marketFeed), true);
@@ -62,15 +62,30 @@ class IndexController extends AbstractController
         $recentUpdates = $this->universalisApi->getRecentlyUpdated();
         $recentUpdates = json_decode(json_encode($recentUpdates), true);
 
-        return $this->render('Home/home.html.twig',[
+        $renderParameters = [
         //    'market_feed'   => $marketFeed,
             'popular_items' => $this->itemPopularity->get(),
             'uploads_today' => $uploads['uploadCountByDay'][0],
             'uploads_week'  => \array_sum($uploads['uploadCountByDay']),
             'recent'        => \array_slice($recentUpdates['items'], 0, 6)
-        ]);
+        ];
+
+        // Grab server info
+        $server = GameServers::getServer($request->get('server'));
+
+        if ($server != null) {
+            $server = GameServers::getServerId($server);
+
+            // Get tax rates on this server
+            $taxRates = $this->universalisApi->getTaxRates($server);
+            $taxRates = json_decode(json_encode($taxRates), true);
+
+            $renderParameters['tax_rates'] = $taxRates;
+        }
+
+        return $this->render('Home/home.html.twig', $renderParameters);
     }
-    
+
     /**
      * @Route("/.well-known/acme-challenge/{hash}")
      */
@@ -78,7 +93,7 @@ class IndexController extends AbstractController
     {
         return $this->json($hash);
     }
-    
+
     /**
      * @Route("/404", name="404")
      */
@@ -94,7 +109,7 @@ class IndexController extends AbstractController
     {
         throw new \Exception("This is a test error");
     }
-    
+
     /**
      * @Route("/news", name="news_index")
      * @Route("/news/{slug}", name="news")
@@ -106,10 +121,10 @@ class IndexController extends AbstractController
         ];
 
         $slug = $slug ?: 'universalis_launch';
-        
+
         return $this->render('News/'. $templates[$slug]);
     }
-    
+
     /**
      * @Route("/patreon", name="patreon")
      */
@@ -119,7 +134,7 @@ class IndexController extends AbstractController
             'user_patrons' => $this->users->getPatrons()
         ]);
     }
-    
+
     /**
      * @Route("/patreon/refund", name="patreon_refund")
      */
@@ -127,18 +142,18 @@ class IndexController extends AbstractController
     {
         return $this->render('Pages/patreon_refund.html.twig');
     }
-    
+
     /**
      * @Route("/patreon/refund/request", name="patreon_refund_process")
      */
     public function patreonRefundProcess(Request $request)
     {
-    
+
         return $this->redirectToRoute('patreon_refund', [
             'complete' => 1
         ]);
     }
-    
+
     /**
      * @Route("/feedback", name="feedback")
      */
@@ -146,12 +161,12 @@ class IndexController extends AbstractController
     {
         $sent = $request->getSession()->get('feedback_sent');
         $request->getSession()->remove('feedback_sent');
-        
+
         return $this->render('Pages/feedback.html.twig', [
             'feedback_sent' => $sent
         ]);
     }
-    
+
     /**
      * @Route("/feedback/send", name="feedback_send")
      */
@@ -160,32 +175,32 @@ class IndexController extends AbstractController
         $message = trim($request->get('feedback_message'));
         $message = substr($message, 0, 1000);
         $user    = $this->users->getUser(false);
-    
+
         $request->getSession()->set('feedback_sent', 'no');
-    
+
         if (strtolower($request->get('ted')) !== 'ffxiv') {
             return $this->redirectToRoute('feedback');
         }
-    
+
         if (strtoupper($request->get('gil')) !== 'NO') {
             return $this->redirectToRoute('feedback');
         }
-        
+
         if (strlen($message) == 0) {
             return $this->redirectToRoute('feedback');
         }
-        
+
         $key   = 'mb_feedback_client_'. md5($request->getClientIp());
         $count = Redis::Cache()->get($key) ?: 0;
         $count = $count + 1;
-        
+
         if ($count > 10) {
             return $this->redirectToRoute('feedback');
         }
-    
+
         Redis::Cache()->set($key, $count);
         $request->getSession()->set('feedback_sent', 'yes');
-    
+
         $embed = [
             'title'         => "Mogboard Feedback",
             'description'   => $message,
@@ -198,21 +213,21 @@ class IndexController extends AbstractController
                 ]
             ],
         ];
-        
+
         Discord::mog()->sendMessage('574593645626523669', null, $embed);
-        
+
         return $this->redirectToRoute('feedback');
     }
-    
+
     /**
      * @Route("/about", name="about")
      */
     public function about()
     {
-        
+
         $stats = $this->universalisApi->getUploadHistory();
         $stats = json_decode(json_encode($stats), true);
-        
+
         $stats = [];
         return $this->render('Pages/about.html.twig', [
             'market_stats' => $stats,
@@ -234,7 +249,7 @@ class IndexController extends AbstractController
             'market_stats' => $stats,
         ]);
     }
-    
+
     /**
      * @Route("/server-status", name="server_status")
      */
@@ -243,11 +258,11 @@ class IndexController extends AbstractController
         $xivapi  = new XIVAPI();
         $status  = $xivapi->market->online();
         $list    = [];
-        
+
         foreach ($status->Status as $i => $serverStatus) {
             $list[$serverStatus->Server] = $serverStatus;
         }
-        
+
         return $this->render('Pages/servers.html.twig',[
             'servers_status'  => $list
         ]);
