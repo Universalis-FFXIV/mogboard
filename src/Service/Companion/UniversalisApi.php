@@ -8,7 +8,7 @@ use GuzzleHttp\RequestOptions;
 class UniversalisApi
 {
     const PROD    = 'https://universalis.app';
-    #const STAGING = 'https://staging.xivapi.com';
+    const STAGING = 'https://staging.universalis.app';
     #const DEV     = 'http://xivapi.local';
 
     const TIMEOUT = 10.0;
@@ -57,6 +57,34 @@ class UniversalisApi
     {
         return $this->query("GET", "api/extra/stats/upload-history", [
             RequestOptions::QUERY => [
+                'src'   => 'universalis_front'
+            ]
+        ]);
+    }
+
+    public function getWorldUploadCounts()
+    {
+        return $this->query("GET", "api/extra/stats/world-upload-counts", [
+            RequestOptions::QUERY => [
+                'src'   => 'universalis_front'
+            ]
+        ]);
+    }
+
+    public function getUploaderUploadCounts()
+    {
+        return $this->query("GET", "api/extra/stats/uploader-upload-counts", [
+            RequestOptions::QUERY => [
+                'src'   => 'universalis_front'
+            ]
+        ]);
+    }
+
+    public function getTaxRates(int $worldId)
+    {
+        return $this->query("GET", "api/tax-rates", [
+            RequestOptions::QUERY => [
+                'world' => $worldId,
                 'src'   => 'universalis_front'
             ]
         ]);
