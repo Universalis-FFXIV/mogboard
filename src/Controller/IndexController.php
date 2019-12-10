@@ -68,6 +68,7 @@ class IndexController extends AbstractController
             'popular_items' => $this->itemPopularity->get(),
             'uploads_today' => $uploads['uploadCountByDay'][0],
             'uploads_week'  => \array_sum($uploads['uploadCountByDay']),
+            'uploads_world' => $this->universalisApi->getWorldUploadCounts(),
             'recent'        => \array_slice($recentUpdates['items'], 0, 6)
         ];
 
@@ -75,6 +76,8 @@ class IndexController extends AbstractController
         $server = GameServers::getServer($request->get('server'));
 
         if ($server != null) {
+            $renderParameters['server'] = $server;
+
             $server = GameServers::getServerId($server);
 
             // Get tax rates on this server

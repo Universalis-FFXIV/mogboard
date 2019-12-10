@@ -1,3 +1,12 @@
+{% set cityflags = {
+    1:  '/i/060000/060881.png',
+    2:  '/i/060000/060882.png',
+    3:  '/i/060000/060883.png',
+    4:  '/i/060000/060884.png',
+    7:  '/i/060000/060885.png',
+    10: '/i/060000/060886.png',
+} %}
+
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -163,35 +172,71 @@
 
             {# TAX RATES #}
 
-            {% if taxRates is defined %}
-            <h4>Current Market Tax Rates</h4>
+            {% if tax_rates is defined %}
+            <div class="flex updates_box" style="margin-bottom: 20px">
+                <div>
+                    <h5>Current Market Tax Rates on {{ server }}</h5>
+                    <br>
+                    <div class="flex avg_prices">
+                        <div class="flex_50">
+                            <img src="{{ cityflags[1]|icon }}" class="price-city-flag"> {{ tax_rates["Limsa Lominsa"] }}%
+                        </div>
+                        <div class="flex_50">
+                            <img src="{{ cityflags[2]|icon }}" class="price-city-flag"> {{ tax_rates["Gridania"] }}%
+                        </div>
+                        <div class="flex_50">
+                            <img src="{{ cityflags[3]|icon }}" class="price-city-flag"> {{ tax_rates["Ul'dah"] }}%
+                        </div>
+                        <div class="flex_50">
+                            <img src="{{ cityflags[4]|icon }}" class="price-city-flag"> {{ tax_rates["Ishgard"] }}%
+                        </div>
+                        <div class="flex_50">
+                            <img src="{{ cityflags[7]|icon }}" class="price-city-flag"> {{ tax_rates["Kugane"] }}%
+                        </div>
+                        <div class="flex_50">
+                            <img src="{{ cityflags[10]|icon }}" class="price-city-flag"> {{ tax_rates["Crystarium"] }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
             {% endif %}
 
+            {# UPLOAD COUNTS BY WORLD #}
+
+            <div class="flex updates_box" style="margin-bottom: 20px">
+                <div>
+                    <h5>Upload Count by World</h5>
+                    <br>
+                    <div class="flex avg_prices">
+                    </div>
+                </div>
+            </div>
+
             {# AVERAGE PRICES AND HISTORY #}
-<div>
-    <div>
-        <div class="flex updates_box">
+        <div>
             <div>
-                <h5>Uploads today</h5>
-                <br>
-                <div class="flex avg_prices">
-                    <div class="flex_50">
-                        {{ uploads_today|number_format }}
+                <div class="flex updates_box">
+                    <div>
+                        <h5>Uploads today</h5>
+                        <br>
+                        <div class="flex avg_prices">
+                            <div class="flex_50">
+                                {{ uploads_today|number_format }}
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h5>Uploads this week</h5>
+                        <br>
+                        <div class="flex avg_prices">
+                            <div class="flex_50">
+                                {{ uploads_week|number_format }}
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <p class="mog-honorable" style="text-align: center; margin-top: 5px;">Thank you!</p>
             </div>
-            <div>
-                <h5>Uploads this week</h5>
-                <br>
-                <div class="flex avg_prices">
-                    <div class="flex_50">
-                        {{ uploads_week|number_format }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <p class="mog-honorable" style="text-align: center; margin-top: 5px;">Thank you!</p>
-    </div>
         </div>
     </div>
 {% endblock %}
