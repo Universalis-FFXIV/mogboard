@@ -208,6 +208,16 @@
                     <h5>Upload Counts by World</h5>
                     <br>
                     <div class="flex avg_prices">
+                        {% include 'Home/chart_hc.html.twig' with {
+                            chart: {
+                                id: 'world_pie',
+                                series: [{
+                                    name: 'Proportion',
+                                    colorByPoint: true,
+                                    data: uploads_world
+                                }]
+                            }
+                        } %}
                     </div>
                 </div>
             </div>

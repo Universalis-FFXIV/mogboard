@@ -1,0 +1,23 @@
+<div class="highchart" style="width:100%;">
+    <div id="{{ chart.id }}"></div>
+</div>
+<script>
+// Create the chart
+var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+    },
+    title: {
+        text: undefined, // We use the parent flexbox as a container for the title
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+    },
+    series: {
+        {{ chart.series }}
+    },
+});
+</script>
