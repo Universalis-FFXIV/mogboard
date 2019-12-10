@@ -34,7 +34,7 @@ namespace MogboardDataExporter
 
             Console.WriteLine("Starting game data export...");
 
-            goto world_export;
+            //goto world_export;
 
             #region Item Export
             var items = realm.GameData.GetSheet<Item>();
@@ -113,7 +113,7 @@ namespace MogboardDataExporter
             #endregion
 
             #region World Export
-            world_export:
+            //world_export:
             var worlds = realm.GameData.GetSheet("World");
 
             var outputWorlds = new List<JObject>();
