@@ -63,11 +63,22 @@ class IndexController extends AbstractController
         $recentUpdates = $this->universalisApi->getRecentlyUpdated();
         $recentUpdates = json_decode(json_encode($recentUpdates), true);
 
+        // Pie chart for world upload counts
+        $uploadsWorld = $this->universalisApi->getWorldUploadCounts();
+        $uploadsWorld = json_decode(json_encode($uploadsWorld), true);
+        $pieData = [];
+        foreach ($uploadsWorld as $key => $value) {
+            $nextItem->name = $key;
+            $nextItem->y = $value['count'];
+            \array_push($pieData);
+        }
+
         $renderParameters = [
         //    'market_feed'   => $marketFeed,
             'popular_items' => $this->itemPopularity->get(),
             'uploads_today' => $uploads['uploadCountByDay'][0],
             'uploads_week'  => \array_sum($uploads['uploadCountByDay']),
+            'uploads_world' => $this->universalisApi->getWorldUploadCounts(),
             'recent'        => \array_slice($recentUpdates['items'], 0, 6)
         ];
 
