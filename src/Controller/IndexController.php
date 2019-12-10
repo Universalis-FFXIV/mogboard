@@ -68,6 +68,7 @@ class IndexController extends AbstractController
         $uploadsWorld = json_decode(json_encode($uploadsWorld), true);
         $pieData = [];
         foreach ($uploadsWorld as $key => $value) {
+            $nextItem = new \stdClass();
             $nextItem->name = $key;
             $nextItem->y = $value['count'];
             \array_push($pieData);
@@ -78,7 +79,7 @@ class IndexController extends AbstractController
             'popular_items' => $this->itemPopularity->get(),
             'uploads_today' => $uploads['uploadCountByDay'][0],
             'uploads_week'  => \array_sum($uploads['uploadCountByDay']),
-            'uploads_world' => $this->universalisApi->getWorldUploadCounts(),
+            'uploads_world' => $pieData,
             'recent'        => \array_slice($recentUpdates['items'], 0, 6)
         ];
 
