@@ -201,6 +201,28 @@
             </div>
             {% endif %}
 
+            {# UPLOAD COUNTS BY WORLD #}
+
+            <div class="flex updates_box" style="margin-bottom: 20px">
+                <div>
+                    <h5>Upload Counts by World</h5>
+                    <br>
+                    <div class="flex avg_prices">
+                        {% include 'Home/chart_hc.html.twig' with {
+                            chart: {
+                                id: 'world_pie',
+                                series: [{
+                                    name: 'Proportion',
+                                    colorByPoint: true,
+                                    data: uploads_world
+                                }],
+                                server,
+                            },
+                        } %}
+                    </div>
+                </div>
+            </div>
+
             {# AVERAGE PRICES AND HISTORY #}
         <div>
             <div>

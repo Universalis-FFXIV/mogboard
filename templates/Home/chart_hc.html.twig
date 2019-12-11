@@ -1,0 +1,43 @@
+<div class="highchart-noborder" style="width:100%;">
+    <div id="{{ chart.id }}"></div>
+</div>
+<script>
+var seriesData = {{ chart.series|json_encode|raw }};
+seriesData[0].data = seriesData[0].data.sort(function(a, b) {
+    return a.y - b.y;
+}){% if server is defined %}.map(function(el) {
+    if (el.name === server) {
+        el.selected = true;
+        el.sliced = true;
+    }
+    return el;
+}){% endif %};
+
+// Create the chart
+var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
+    chart: {
+        backgroundColor: null,
+        borderWidth: null,
+        height: 300,
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        shadow: false,
+        type: 'pie',
+    },
+    plotOptions: {
+        pie: {
+            dataLabels: {
+                enabled: false,
+            },
+        },
+    },
+    series: seriesData,
+    title: {
+        text: undefined, // We use the parent flexbox as a container for the title
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>Count: <b>{point.y}</b>',
+    },
+});
+</script>
