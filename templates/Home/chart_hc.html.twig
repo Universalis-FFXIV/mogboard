@@ -17,7 +17,7 @@ var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
     },
     series: {
-        {{ chart.series }}
+        {{ chart.series|json_encode|raw }}
     },
 });
 </script>
