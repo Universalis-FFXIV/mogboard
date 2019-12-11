@@ -7,21 +7,28 @@ var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
     chart: {
         backgroundColor: null,
         borderWidth: null,
-        height: 200,
+        height: 300,
         plotBackgroundColor: null,
         plotBorderWidth: null,
         plotShadow: false,
         shadow: false,
         type: 'pie',
     },
+    plotOptions: {
+        pie: {
+            dataLabels: {
+                enabled: false,
+            },
+        },
+    },
+    series: {{ chart.series|json_encode|raw }}.sort(function(a, b) {
+        return a.y - b.y;
+    }),
     title: {
         text: undefined, // We use the parent flexbox as a container for the title
     },
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>Count: <b>{point.y}</b>',
     },
-    series: {{ chart.series|json_encode|raw }}.sort(function(a, b) {
-        return a.y - b.y;
-    }),
 });
 </script>
