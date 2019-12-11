@@ -79,7 +79,7 @@ class IndexController extends AbstractController
             'popular_items' => $this->itemPopularity->get(),
             'uploads_today' => $uploads['uploadCountByDay'][0],
             'uploads_week'  => \array_sum($uploads['uploadCountByDay']),
-            'uploads_world' => $pieData,
+            'uploads_world' => json_encode($pieData),
             'recent'        => \array_slice($recentUpdates['items'], 0, 6)
         ];
 
