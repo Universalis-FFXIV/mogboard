@@ -2,6 +2,17 @@
     <div id="{{ chart.id }}"></div>
 </div>
 <script>
+var seriesData = {{ chart.series|json_encode|raw }};
+seriesData.data = seriesData.data.sort(function(a, b) {
+    return a.y - b.y;
+}){% if server is defined %}.map(function(el) {
+    if (el.name === server) {
+        el.selected = true;
+        el.sliced = true;
+    }
+    return el;
+}){% endif %};
+
 // Create the chart
 var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
     chart: {
@@ -21,9 +32,7 @@ var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
             },
         },
     },
-    series: {{ chart.series|json_encode|raw }}.sort(function(a, b) {
-        return a.y - b.y;
-    }),
+    series: seriesData,
     title: {
         text: undefined, // We use the parent flexbox as a container for the title
     },
