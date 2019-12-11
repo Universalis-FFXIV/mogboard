@@ -71,7 +71,7 @@ class IndexController extends AbstractController
             $nextItem = new \stdClass();
             $nextItem->name = $key;
             $nextItem->y = $value['count'];
-            \array_push($pieData);
+            \array_push($pieData, $nextItem);
         }
 
         $renderParameters = [
