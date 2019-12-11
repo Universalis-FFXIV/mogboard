@@ -10,6 +10,9 @@ var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
         plotShadow: false,
         type: 'pie',
     },
+    label: {
+        enabled: false
+    },
     title: {
         text: undefined, // We use the parent flexbox as a container for the title
     },
