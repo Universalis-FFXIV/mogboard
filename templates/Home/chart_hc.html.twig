@@ -16,6 +16,8 @@ var chart{{ chart.id }} = Highcharts.chart('{{ chart.id }}', {
     tooltip: {
         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b><br>Count: <b>{point.y}</b>',
     },
-    series: {{ chart.series|json_encode|raw }}.sort((a, b) => a.y - b.y),
+    series: {{ chart.series|json_encode|raw }}.sort(function(a, b) {
+        return a.y - b.y;
+    }),
 });
 </script>
