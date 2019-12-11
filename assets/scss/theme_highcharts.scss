@@ -9,3 +9,13 @@
         height: 320px;
     }
 }
+
+.highchart-noborder {
+    text-shadow: none;
+    overflow: hidden;
+    margin-bottom: 20px;
+
+    > div {
+        height: 320px;
+    }
+}
